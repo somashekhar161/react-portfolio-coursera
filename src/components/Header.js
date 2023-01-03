@@ -44,8 +44,27 @@ const Header = () => {
     }
   };
 
+  const boxScroll = useRef();
+  let scrollPosition = 0;
+  useEffect(() => {
+    function handleScroll(e) {
+      if (scrollPosition < window.scrollY) {
+        scrollPosition = window.scrollY;
+        boxScroll.current.style.transform = "translateY(-200px)";
+      } else {
+        scrollPosition = window.scrollY;
+        boxScroll.current.style.transform = "translateY(0px)";
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <Box
+      ref={boxScroll}
       position="fixed"
       top={0}
       left={0}
@@ -66,9 +85,9 @@ const Header = () => {
           <nav>
             {/* Add social media links based on the `socials` data */}
             <HStack spacing={8}>
-              {socials.map((social) => {
+              {socials.map((social, index) => {
                 return (
-                  <a href={social.url}>
+                  <a key={index} href={social.url}>
                     <FontAwesomeIcon icon={social.icon} size={"2x"} />
                   </a>
                 );
